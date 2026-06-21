@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+airflow/.venv/
+
+# Airflow
+airflow/logs/
+airflow/uv.lock
+
+# Generated data
+ingestion/raw_data/
+
+# Large API datasets
+api/data/users.json
+api/data/bookings.json
+api/data/flights.json
+api/data/hotels.json
+
+# Environment
+.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# VS Code
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
