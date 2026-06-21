@@ -1,0 +1,30 @@
+# Git
+.git
+.github
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environments
+.venv/
+venv/
+
+# Airflow runtime files
+airflow/logs/
+airflow/config/
+airflow/plugins/
+
+# Local generated data
+sample_data/
+ingestion/raw_data/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
