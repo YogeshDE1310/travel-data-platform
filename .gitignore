@@ -45,3 +45,19 @@ logs/
 # Python cache
 __pycache__/
 *.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+airflow/.venv/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store

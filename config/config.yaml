@@ -15,16 +15,17 @@ paths:
   raw_data_folder: "raw_data"
 
 bronze:
-  folder: "bronze"
+  s3_path: "s3://travel-data-lake-yogesh/bronze/"
 
 silver:
-  folder: "silver"
+  s3_path: "s3://travel-data-lake-yogesh/silver/"
 
 gold:
-  folder: "gold"
+  s3_path: "s3://travel-data-lake-yogesh/gold/"
 
 snowflake:
   account: ""
   warehouse: "COMPUTE_WH"
   database: "TRAVEL_DB"
   schema: "TRAVEL_SCHEMA"
+
