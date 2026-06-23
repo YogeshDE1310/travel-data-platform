@@ -1,56 +1,100 @@
-import boto3
 import os
 
-# Replace with your real bucket name
+import boto3
 
-BUCKET_NAME = "travel-data-lake-yogesh"
 
-# Folder containing extracted raw files
+from utils.logger import logger
 
-RAW_DATA_FOLDER = "raw_data"
+# --------------------------------------------------
+# Load Configuration
+# --------------------------------------------------
 
-# Create S3 client
+from utils.config_loader import config
 
-s3 = boto3.client("s3")
+BUCKET_NAME = config["aws"]["bucket_name"]
+REGION = config["aws"]["region"]
+RAW_DATA_FOLDER = config["paths"]["raw_data_folder"]
 
-# Upload all files
+# --------------------------------------------------
+# Create S3 Client
+# --------------------------------------------------
 
-for file_name in os.listdir(RAW_DATA_FOLDER):
+s3 = boto3.client(
+    "s3",
+    region_name=REGION
+)
 
-    local_path = os.path.join(
-        RAW_DATA_FOLDER,
-        file_name
-    )
 
-    # Create Bronze layer paths
+# --------------------------------------------------
+# Upload Single File
+# --------------------------------------------------
 
-    if "users" in file_name:
+def upload_file(local_file):
 
-        s3_path = f"bronze/users/{file_name}"
+    file_name = os.path.basename(local_file)
 
-    elif "flights" in file_name:
+    dataset = file_name.split("_")[0]
 
-        s3_path = f"bronze/flights/{file_name}"
+    s3_key = f"bronze/{dataset}/{file_name}"
 
-    elif "hotels" in file_name:
+    logger.info(f"Uploading : {file_name}")
 
-        s3_path = f"bronze/hotels/{file_name}"
+    try:
 
-    elif "bookings" in file_name:
+        s3.upload_file(
+            local_file,
+            BUCKET_NAME,
+            s3_key
+        )
 
-        s3_path = f"bronze/bookings/{file_name}"
+        logger.info(
+            f"Uploaded Successfully : s3://{BUCKET_NAME}/{s3_key}"
+        )
 
-    else:
-        continue
+    except Exception as e:
 
-    print(f"Uploading {file_name}...")
+        logger.error(f"Upload Failed : {file_name}")
 
-    s3.upload_file(
-        local_path,
-        BUCKET_NAME,
-        s3_path
-    )
+        logger.error(str(e))
 
-    print(f"Uploaded to s3://{BUCKET_NAME}/{s3_path}")
 
-print("All files uploaded successfully")
+# --------------------------------------------------
+# Main
+# --------------------------------------------------
+
+def main():
+
+    logger.info("=" * 60)
+    logger.info("S3 Upload Started")
+
+    if not os.path.exists(RAW_DATA_FOLDER):
+
+        logger.error(f"{RAW_DATA_FOLDER} does not exist.")
+
+        return
+
+    files = os.listdir(RAW_DATA_FOLDER)
+
+    if not files:
+
+        logger.warning("No files found to upload.")
+
+        return
+
+    for file in files:
+
+        local_path = os.path.join(
+            RAW_DATA_FOLDER,
+            file
+        )
+
+        upload_file(local_path)
+
+    logger.info("S3 Upload Completed")
+    logger.info("=" * 60)
+    return True
+
+
+if __name__ == "__main__":
+
+    main()

@@ -1,0 +1,7 @@
+Flask
+requests
+boto3
+pandas
+pyspark
+PyYAML
+snowflake-connector-python

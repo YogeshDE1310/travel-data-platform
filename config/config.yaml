@@ -1,0 +1,30 @@
+api:
+  base_url: "http://127.0.0.1:5000"
+
+apis:
+  users: "/users"
+  flights: "/flights"
+  hotels: "/hotels"
+  bookings: "/bookings"
+
+aws:
+  bucket_name: "travel-data-lake-yogesh"
+  region: "ap-south-1"
+
+paths:
+  raw_data_folder: "raw_data"
+
+bronze:
+  folder: "bronze"
+
+silver:
+  folder: "silver"
+
+gold:
+  folder: "gold"
+
+snowflake:
+  account: ""
+  warehouse: "COMPUTE_WH"
+  database: "TRAVEL_DB"
+  schema: "TRAVEL_SCHEMA"

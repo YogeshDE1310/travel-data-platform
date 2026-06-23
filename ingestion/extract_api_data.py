@@ -1,33 +1,113 @@
-import requests
-import json
 import os
+import json
 from datetime import datetime
 
-apis = {
-    "users": "http://127.0.0.1:5000/users",
-    "flights": "http://127.0.0.1:5000/flights",
-    "hotels": "http://127.0.0.1:5000/hotels",
-    "bookings": "http://127.0.0.1:5000/bookings"
-}
+import requests
 
-os.makedirs("raw_data", exist_ok=True)
 
-for api_name, url in apis.items():
+from utils.logger import logger
 
-    print(f"Extracting {api_name} data...")
+# --------------------------------------------------
+# Load Configuration
+# --------------------------------------------------
 
-    response = requests.get(url)
+from utils.config_loader import config
 
-    data = response.json()
+BASE_URL = config["api"]["base_url"]
+RAW_DATA_FOLDER = config["paths"]["raw_data_folder"]
+API_ENDPOINTS = config["apis"]
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+# --------------------------------------------------
+# Create Raw Data Folder
+# --------------------------------------------------
 
-    file_name = f"raw_data/{api_name}_{timestamp}.json"
+os.makedirs(RAW_DATA_FOLDER, exist_ok=True)
 
-    with open(file_name, "w") as f:
 
-        json.dump(data, f, indent=2)
+# --------------------------------------------------
+# Extract API Data
+# --------------------------------------------------
 
-    print(f"{api_name} data saved to {file_name}")
+def extract_api_data(api_name, endpoint):
 
-print("API extraction completed successfully")
+    url = BASE_URL + endpoint
+
+    logger.info(f"Calling API : {url}")
+
+    try:
+
+        response = requests.get(url, timeout=30)
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        file_name = os.path.join(
+            RAW_DATA_FOLDER,
+            f"{api_name}_{timestamp}.json"
+        )
+
+        with open(file_name, "w") as outfile:
+
+            json.dump(
+                data,
+                outfile,
+                indent=4
+            )
+
+        logger.info(f"{api_name} extracted successfully.")
+
+        return file_name
+
+    except requests.exceptions.RequestException as e:
+
+        logger.error(f"API Request Failed : {api_name}")
+
+        logger.error(str(e))
+
+        return None
+
+    except Exception as e:
+
+        logger.error(f"Unexpected Error : {api_name}")
+
+        logger.error(str(e))
+
+        return None
+
+
+# --------------------------------------------------
+# Main
+# --------------------------------------------------
+
+def main():
+
+    logger.info("=" * 60)
+    logger.info("API Extraction Started")
+
+    extracted_files = []
+
+    for api_name, endpoint in API_ENDPOINTS.items():
+
+        file = extract_api_data(api_name, endpoint)
+
+        if file:
+
+            extracted_files.append(file)
+
+    logger.info("API Extraction Completed")
+
+    logger.info(f"Total Files Extracted : {len(extracted_files)}")
+
+    for file in extracted_files:
+
+        logger.info(file)
+
+    logger.info("=" * 60)
+    return extracted_files
+
+if __name__ == "__main__":
+
+    main()

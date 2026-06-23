@@ -35,3 +35,13 @@ api/data/hotels.json
 # OS
 Thumbs.db
 .DS_Store
+
+# Raw extracted data
+raw_data/
+
+# Logs
+logs/
+
+# Python cache
+__pycache__/
+*.pyc
