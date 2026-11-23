@@ -1,3 +1,4 @@
+
 bundle:
   name: travel-data-platform
 
@@ -14,6 +15,9 @@ resources:
       name: travel-pipeline
       tasks:
         - task_key: bronze
+          max_retries: 2
+          min_retry_interval_millis: 60000
+          retry_on_timeout: true
           existing_cluster_id: 1120-103339-7dsypswr
           notebook_task:
             notebook_path: ./databricks/notebooks/01_bronze_ingestion.py
@@ -21,6 +25,9 @@ resources:
         - task_key: silver
           depends_on:
             - task_key: bronze
+          max_retries: 2
+          min_retry_interval_millis: 60000
+          retry_on_timeout: true
           existing_cluster_id: 1120-103339-7dsypswr
           notebook_task:
             notebook_path: ./databricks/notebooks/02_silver_transform.py
@@ -28,6 +35,9 @@ resources:
         - task_key: gold
           depends_on:
             - task_key: silver
+          max_retries: 2
+          min_retry_interval_millis: 60000
+          retry_on_timeout: true
           existing_cluster_id: 1120-103339-7dsypswr
           notebook_task:
             notebook_path: ./databricks/notebooks/03_gold_aggregation.py
