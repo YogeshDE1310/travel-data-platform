@@ -13,6 +13,12 @@ resources:
   jobs:
     travel_pipeline:
       name: travel-pipeline
+
+      schedule:
+        quartz_cron_expression: "0 0/10 * * * ?"
+        timezone_id: "Asia/Kolkata"
+        pause_status: UNPAUSED
+
       tasks:
         - task_key: bronze
           max_retries: 2
