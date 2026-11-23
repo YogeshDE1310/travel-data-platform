@@ -1,0 +1,40 @@
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and test files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Databricks local configuration
+.databricks/
+
+# Spark checkpoints and schemas
+checkpoints/
+_schemas/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# IDE
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+
+travel-data-platform/
